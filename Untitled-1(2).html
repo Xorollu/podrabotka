@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>подработка.ру — Найди или предложи работу</title>
+  <!-- 🔹 Favicon: буква "П" на тёмном фоне -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' style='background:%231e293b'><text x='50%' y='68%' font-size='22' text-anchor='middle' fill='%2360a5fa' font-family='Segoe UI, sans-serif'>П</text></svg>" type="image/svg+xml">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+      padding: 20px;
+      position: relative;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 25px 0;
+      position: relative;
+      background: #1e293b;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 10px auto 0;
+    }
+
+    #user-name-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #f1f5f9;
+      background: rgba(59, 130, 246, 0.15);
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    #auth-or-profile {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: #60a5fa;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-link:hover {
+      background: rgba(96, 165, 250, 0.1);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    h1 .domain {
+      color: #60a5fa;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin: 28px 0 18px;
+      color: #cbd5e1;
+      position: relative;
+      padding-bottom: 8px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: #60a5fa;
+      border-radius: 2px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      border: 1px solid #334155;
+      transition: transform 0.25s ease;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: #334155;
+      color: #e2e8f0;
+      transition: all 0.3s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
+
+    ::placeholder {
+      color: #94a3b8;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    button:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .post-category {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cat-repair       { background: #64748b; color: #f1f5f9; }
+    .cat-tutoring     { background: #475569; color: #e2e8f0; }
+    .cat-dog-walking  { background: #334155; color: #cbd5e1; }
+    .cat-part-time    { background: #4b5563; color: #f1f5f9; }
+    .cat-other        { background: #6b7280; color: #f1f5f9; }
+
+    .post-title {
+      font-size: 1.3rem;
+      margin: 10px 0 12px;
+      color: #f1f5f9;
+    }
+
+    .post-contact {
+      font-style: italic;
+      color: #94a3b8;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .response-form {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed #475569;
+    }
+
+    .response-item {
+      background: #334155;
+      padding: 14px;
+      margin-top: 12px;
+      border-radius: 10px;
+      border-left: 4px solid #60a5fa;
+      font-size: 0.98rem;
+      color: #e2e8f0;
+    }
+
+    .response-item strong {
+      color: #f1f5f9;
+    }
+
+    /* 🔹 Фильтр */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .filter-btn {
+      background: #334155;
+      border: 1px solid #475569;
+      color: #cbd5e1;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      background: #475569;
+    }
+
+    .filter-btn.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+
+    /* 🔹 Кнопка удаления */
+    .post-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .delete-btn:hover {
+      background: #dc2626;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #64748b;
+      font-size: 0.95rem;
+      padding: 20px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    #auth-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    #auth-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: #1e293b;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 450px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .role-toggle {
+      display: flex;
+      background: #334155;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .role-btn.active {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      max-width: 320px;
+    }
+
+    .toast {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      border-left: 4px solid #3b82f6;
+      animation: slideIn 0.3s ease-out forwards;
+    }
+
+    .toast.success { border-left-color: #10b981; }
+    .toast.info    { border-left-color: #60a5fa; }
+
+    .toast-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(100%); }
+    }
+
+    .toast:hover {
+      animation-play-state: paused !important;
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 15px; }
+      h1 { font-size: 1.8rem; }
+      .card { padding: 18px; }
+      #user-name-badge { font-size: 1rem; padding: 4px 10px; }
+      .filters { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div id="auth-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Регистрация</h2>
+        <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+      </div>
+
+      <div class="role-toggle">
+        <button class="role-btn active" data-role="freelancer">Исполнитель</button>
+        <button class="role-btn" data-role="employer">Работодатель</button>
+      </div>
+
+      <form id="freelancerForm" class="auth-form active">
+        <label for="fl-name">Ваше имя и фамилия</label>
+        <input type="text" id="fl-name" placeholder="Анна Сидорова" required>
+        <label for="fl-email">Email</label>
+        <input type="email" id="fl-email" placeholder="anna@example.com" required>
+        <label for="fl-skills">Сфера деятельности</label>
+        <input type="text" id="fl-skills" placeholder="Репетитор по математике" required>
+        <label for="fl-phone">Телефон</label>
+        <input type="tel" id="fl-phone" placeholder="+7 (999) 123-45-67" required>
+        <button type="submit" style="width: 100%; margin-top: 20px;">Зарегистрироваться</button>
+      </form>
+
+      <form id="employerForm" class="auth-form">
+        <label for="emp-name">Ваше имя и фамилия</label>
+        <input type="text" id="emp-name" placeholder="Иван Петров" required>
+        <label for="emp-email">Email</label>
+        <input type="email" id="emp-email" placeholder="ivan@example.com" required>
+        <label for="emp-phone">Телефон (опционально)</label>
+        <input type="tel" id="emp-phone" placeholder="+7 (999) 123-45-67">
+        <button type="submit" style="width: 100%; margin-top: 20px;">Зарегистрироваться</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="main-page" class="page active">
+      <header>
+        <div id="user-name-badge"></div>
+        <div id="auth-or-profile"></div>
+        <h1>подработка<span class="domain">.ру</span></h1>
+        <p>Найди или предложи временную работу — быстро и без посредников</p>
+      </header>
+
+      <section class="card">
+        <h2>➕ Разместить задание</h2>
+        <form id="postForm">
+          <label for="title">Заголовок</label>
+          <input type="text" id="title" name="title" placeholder="Нужен грузчик на 2 часа" required>
+          <label for="category">Категория</label>
+          <select id="category" name="category" required>
+            <option value="">— Выберите —</option>
+            <option value="part-time">Подработка</option>
+            <option value="repair">Ремонт</option>
+            <option value="tutoring">Репетиторство</option>
+            <option value="dog-walking">Выгул собак</option>
+            <option value="other">Другое</option>
+          </select>
+          <label for="description">Описание</label>
+          <textarea id="description" name="description" rows="3" placeholder="Когда, где, что нужно сделать..." required></textarea>
+          <label for="contact">Контакт</label>
+          <input type="text" id="contact" name="contact" placeholder="Telegram, WhatsApp или телефон" required>
+          <button type="submit">Опубликовать</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>📋 Активные задания</h2>
+
+        <!-- 🔹 Фильтр -->
+        <div class="filters">
+          <button class="filter-btn active" data-category="all">Все</button>
+          <button class="filter-btn" data-category="part-time">Подработка</button>
+          <button class="filter-btn" data-category="repair">Ремонт</button>
+          <button class="filter-btn" data-category="tutoring">Репетиторство</button>
+          <button class="filter-btn" data-category="dog-walking">Выгул собак</button>
+          <button class="filter-btn" data-category="other">Другое</button>
+        </div>
+
+        <div id="posts-container">
+          <!-- Объявления -->
+        </div>
+      </section>
+
+      <footer>
+        <p>© 2025 <span style="color:#60a5fa">подработка.ру</span></p>
+      </footer>
+    </div>
+
+    <div id="profile-page" class="page">
+      <header>
+        <button class="btn-link" onclick="showPage('main-page')" style="position: absolute; top: 20px; left: 20px;">← Назад</button>
+        <h1>Мой профиль</h1>
+        <p>Ваши данные и настройки</p>
+      </header>
+
+      <section class="card">
+        <h2 id="profile-full-name">Анна Сидорова</h2>
+        <p id="profile-role" style="margin: 4px 0 16px; color: #94a3b8;">Исполнитель</p>
+
+        <h3>Данные</h3>
+        <p><strong>Email:</strong> <span id="info-email">anna@example.com</span></p>
+        <p><strong>Телефон:</strong> <span id="info-phone">+7 (999) 123-45-67</span></p>
+        <p id="info-skills"><strong>Сфера:</strong> <span>Репетитор по математике</span></p>
+
+        <button onclick="logout()" style="margin-top: 20px; background: #ef4444; width: 100%;">Выйти</button>
+      </section>
+
+      <footer>
+        <p>© 2025 подработка.ру</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY_USER = 'userProfile';
+    const STORAGE_KEY_POSTS = 'userPosts';
+
+    const EXAMPLE_POSTS = [
+      { id: 'ex-1', userId: 'Администрация', title: 'Нужен помощник на склад (Марьино)', category: 'part-time', description: 'Разгрузка коробок (до 15 кг), 4 часа, 2500 ₽. Начало в 10:00.', contact: '+7 (926) 111-22-33', isExample: true },
+      { id: 'ex-2', userId: 'Ольга И.', title: 'Репетитор по английскому (онлайн, 9 класс)', category: 'tutoring', description: 'Подготовка к ОГЭ. 2 раза в неделю по 1.5 часа. Опыт 6 лет.', contact: '@tutor_olga', isExample: true },
+      { id: 'ex-3', userId: 'Алексей', title: 'Срочно нужен сантехник (Беляево)', category: 'repair', description: 'Подтекает кран на кухне, нужно заменить картридж. 1 час.', contact: 'Telegram: @plumber_alex', isExample: true }
+    ];
+
+    let currentFilter = 'all';
+
+    // === ХРАНЕНИЕ ===
+    function saveProfile(data) { localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(data)); }
+    function loadProfile() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USER) || 'null'); }
+    function clearProfile() { localStorage.removeItem(STORAGE_KEY_USER); }
+
+    function saveUserPosts(posts) { localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(posts)); }
+    function loadUserPosts() { return JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS) || '[]'); }
+
+    // === UI ===
+    function updateUI() {
+      const user = loadProfile();
+      const nameBadge = document.getElementById('user-name-badge');
+      const authOrProfile = document.getElementById('auth-or-profile');
+
+      if (user) {
+        nameBadge.textContent = user.name;
+        nameBadge.style.display = 'block';
+        authOrProfile.innerHTML = `<button class="btn-link" onclick="showPage('profile-page')">Кабинет</button>`;
+      } else {
+        nameBadge.style.display = 'none';
+        authOrProfile.innerHTML = `<button class="btn-link" onclick="openAuthModal()">Войти</button>`;
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : '📨'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      let hideTimer = setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.4s ease-out forwards';
+        setTimeout(() => { if (toast.parentNode) container.removeChild(toast); }, 400);
+      }, 4500);
+
+      toast.addEventListener('mouseenter', () => { clearTimeout(hideTimer); toast.style.animationPlayState = 'paused'; });
+      toast.addEventListener('mouseleave', () => {
+        clearTimeout(hideTimer);
+        toast.style.animationPlayState = 'running';
+        hideTimer = setTimeout(() => {
+          toast.style.animation = 'fadeOut 0.4s ease-out forwards';
+          setTimeout(() => { if (toast.parentNode) container.removeChild(toast); }, 400);
+        }, 3000);
+      });
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      updateUI();
+      if (pageId === 'main-page') renderPosts();
+    }
+
+    function openAuthModal() { document.getElementById('auth-modal').classList.add('active'); }
+    function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
+
+    function logout() {
+      clearProfile();
+      showToast('🚪 Вы вышли из аккаунта', 'info');
+      updateUI();
+      showPage('main-page');
+    }
+
+    function fillProfilePage(user) {
+      document.getElementById('profile-full-name').textContent = user.name;
+      document.getElementById('profile-role').textContent = user.role === 'freelancer' ? 'Исполнитель' : 'Работодатель';
+      document.getElementById('info-email').textContent = user.email;
+      document.getElementById('info-phone').textContent = user.phone || '—';
+      const skillsEl = document.getElementById('info-skills');
+      if (user.skills) { skillsEl.style.display = 'block'; skillsEl.querySelector('span').textContent = user.skills; }
+      else { skillsEl.style.display = 'none'; }
+    }
+
+    // === ВСПОМОГАТЕЛЬНЫЕ ===
+    function getCategoryClass(cat) {
+      const map = { 'part-time': 'cat-part-time', 'repair': 'cat-repair', 'tutoring': 'cat-tutoring', 'dog-walking': 'cat-dog-walking', 'other': 'cat-other' };
+      return map[cat] || 'cat-other';
+    }
+    function getCategoryName(cat) {
+      const map = { 'part-time': 'Подработка', 'repair': 'Ремонт', 'tutoring': 'Репетиторство', 'dog-walking': 'Выгул собак', 'other': 'Другое' };
+      return map[cat] || 'Другое';
+    }
+
+    // 🔹 ФИЛЬТРАЦИЯ
+    function setFilter(category) {
+      currentFilter = category;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.filter-btn[data-category="${category}"]`).classList.add('active');
+      renderPosts();
+    }
+
+    // 🔹 РЕНДЕР
+    function renderPosts() {
+      const container = document.getElementById('posts-container');
+      const userPosts = loadUserPosts();
+      const allPosts = [...userPosts, ...EXAMPLE_POSTS];
+
+      const filtered = currentFilter === 'all'
+        ? allPosts
+        : allPosts.filter(p => p.category === currentFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="card" style="text-align:center;color:#94a3b8;">Нет заданий по выбранному фильтру</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(post => {
+        const isOwn = !post.isExample && loadProfile()?.name === post.userId;
+        return `
+          <div class="card post">
+            <span class="post-category ${getCategoryClass(post.category)}">${getCategoryName(post.category)}</span>
+            <h3 class="post-title">${post.title}</h3>
+            <p>${post.description}</p>
+            <p class="post-contact">Контакт: ${post.contact}</p>
+            <form class="response-form" data-post-id="${post.id}">
+              <label>Ставка</label>
+              <input type="number" min="0" step="10" placeholder="₽" required>
+              <label>Ваше имя и контакты</label>
+              <input type="text" placeholder="Ваше имя и телефон" required>
+              <button type="submit">Откликнуться</button>
+            </form>
+            ${isOwn ? `<div class="post-actions"><button class="delete-btn" onclick="deletePost('${post.id}')">🗑️ Удалить</button></div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      // Обработчики откликов
+      document.querySelectorAll('.response-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const user = loadProfile();
+          if (!user) { showToast('🔒 Войдите, чтобы отправлять отклики', 'info'); openAuthModal(); return; }
+          showToast('📨 Отклик отправлен!', 'info');
+          this.reset();
+        });
+      });
+    }
+
+    // 🔹 УДАЛЕНИЕ
+    function deletePost(postId) {
+      if (!confirm('Вы уверены, что хотите удалить это объявление?')) return;
+
+      const posts = loadUserPosts();
+      const newPosts = posts.filter(p => p.id !== postId);
+      saveUserPosts(newPosts);
+
+      renderPosts();
+      showToast('🗑️ Объявление удалено', 'info');
+    }
+
+    // 🔹 ПУБЛИКАЦИЯ
+    function handlePostSubmit(e) {
+      e.preventDefault();
+      const user = loadProfile();
+      if (!user) { showToast('🔒 Войдите, чтобы публиковать задания', 'info'); openAuthModal(); return; }
+
+      const { title, category, description, contact } = {
+        title: document.getElementById('title').value.trim(),
+        category: document.getElementById('category').value,
+        description: document.getElementById('description').value.trim(),
+        contact: document.getElementById('contact').value.trim()
+      };
+
+      if (!title || !category || !description || !contact) {
+        showToast('⚠️ Заполните все поля', 'info');
+        return;
+      }
+
+      const newPost = {
+        id: 'user-' + Date.now(),
+        userId: user.name,
+        title,
+        category,
+        description,
+        contact,
+        createdAt: new Date().toISOString()
+      };
+
+      const posts = loadUserPosts();
+      posts.unshift(newPost);
+      saveUserPosts(posts);
+
+      renderPosts();
+      showToast('✅ Ваше задание опубликовано!', 'success');
+      e.target.reset();
+    }
+
+    // 🔹 ИНИЦИАЛИЗАЦИЯ
+    document.addEventListener('DOMContentLoaded', () => {
+      updateUI();
+      renderPosts();
+
+      // Фильтры
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => setFilter(btn.dataset.category));
+      });
+
+      // Регистрация
+      document.getElementById('freelancerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('fl-name').value.trim();
+        if (!name) { showToast('⚠️ Укажите имя и фамилию', 'info'); return; }
+        const profile = { name, email: document.getElementById('fl-email').value, phone: document.getElementById('fl-phone').value, skills: document.getElementById('fl-skills').value, role: 'freelancer' };
+        saveProfile(profile);
+        fillProfilePage(profile);
+        closeAuthModal();
+        updateUI();
+        showToast(`✅ Добро пожаловать, ${name}!`, 'success');
+      });
+
+      document.getElementById('employerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('emp-name').value.trim();
+        if (!name) { showToast('⚠️ Укажите имя и фамилию', 'info'); return; }
+        const profile = { name, email: document.getElementById('emp-email').value, phone: document.getElementById('emp-phone').value, skills: null, role: 'employer' };
+        saveProfile(profile);
+        fillProfilePage(profile);
+        closeAuthModal();
+        updateUI();
+        showToast(`✅ Добро пожаловать, ${name}!`, 'success');
+      });
+
+      document.getElementById('postForm').addEventListener('submit', handlePostSubmit);
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.role === 'freelancer' ? 'freelancerForm' : 'employerForm').classList.add('active');
+        });
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAuthModal(); });
+    });
+  </script>
+</body>
+</html>
